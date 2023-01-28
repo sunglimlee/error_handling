@@ -21,7 +21,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final postService = PostService();
-  Future<Post>? postFuture;
+  Future<Post?>? postFuture;
 
   @override
   Widget build(BuildContext context) {
