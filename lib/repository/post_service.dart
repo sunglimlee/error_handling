@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:error_handling/model/post.dart';
 import 'package:error_handling/service/fake_api_client.dart';
 import 'package:error_handling/utils/custom_exception.dart';
+import 'package:error_handling/utils/failure.dart';
 
 // 여기서 json 값으로 바꿔주는 걸 해준다.
 class PostService {
@@ -25,16 +26,17 @@ class PostService {
       // 중요한 사실은 여기 Repository 안에서 예외 처리를 했다는 점이다. 할 수 있지...
       // 근데 이 문제는 전체 예외가 일어났을 때는 어떻게 할 건데..
     } on SocketException {
-      print('No Internet connection 😑');
+      throw Failure('No Internet connection 😑');
     } on HttpException {
-      print("Couldn't find the post 😱");
+      // 이 사용자 정의 에러 클래스를 (꼭 에러클래스에서 상속 받지 않아도 된다.) FutureBuilder 에 throw 해주어서 처리하게 한다.
+      throw Failure("Couldn't find the post 😱");
     } on FormatException {
-      print("Bad response format 👎");
+      throw Failure("Bad response format 👎");
     } on Exception {
       // 이렇게 하면 알 수 없는 에러를 발생할 수 있게지?
       print("알 수 없는 에러 발생");
       // 사용자 정의 Exception 을 만들어서 넘겨주자.
-      throw CustomException('알 수 없는 예외가 발생하였습니다.');
+      throw Failure('알 수 없는 예외가 발생하였습니다.');
     }
   }
 }
