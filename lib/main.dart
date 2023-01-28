@@ -27,7 +27,11 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
+<<<<<<< HEAD
       home: MyHomePage(title: 'Flutter Demo Home Page'),
+=======
+      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+>>>>>>> 31288cb (FutureBuilder handles all errors : Repository & AppClient just returns the dynamic)
     );
   }
 }
