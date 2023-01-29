@@ -4,9 +4,13 @@ FutureBuilder 는 Future 에 의해서 값이 바뀌는 건데... 맞았는데 �
  */
 import 'package:division/division.dart';
 import 'package:error_handling/model/post.dart';
+import 'package:error_handling/repository/post_change_notifier.dart';
 import 'package:error_handling/repository/post_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+/// https://resocoder.com/2019/12/11/proper-error-handling-in-flutter-dart-1-principles/
+/// 예외처리하는데 상당한 도움이 되었다.
 class MyHomePage extends StatefulWidget {
   final String title;
 
@@ -33,7 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              FutureBuilder(
+              /*FutureBuilder(
                   future: postFuture,
                   // 보이지? null 이 될 수 있기 때문에 이제 괜찮은 거다. 내가 생각한게 맞았다. 단지 null 체크를 하지 않아서 그렇게 된거지..
                   builder: (context, asyncSnapshot) {
@@ -59,17 +63,46 @@ class _MyHomePageState extends State<MyHomePage> {
                     } else {
                       return const Txt('Press the button. 👇');
                     }
-                  }),
-
+                  }),*/
+              // FutureBuilder 대신에 Consumer 를 사용해서 값을 변경시킨다.
+              // Consumer 가 지켜보고 있다. 그래서 여기만 바뀐다.
+              Consumer<PostChangeNotifier>(builder: (context, notifier, __) {
+                if (notifier.notifyState == NotifyState.initial) {
+                  return const Txt('Press the button. 👇');
+                } else if (notifier.notifyState == NotifyState.loading) {
+                  return const CircularProgressIndicator();
+                } else {
+                  print("lslll $notifier.failure");
+                  if (notifier.failure != null) {
+                    return Txt(
+                      notifier.failure.toString(),
+                      style: TxtStyle()
+                        ..fontSize(30)
+                        ..textColor(Colors.pink),
+                    );
+                  } else {
+                    return Txt(
+                      notifier.post.toString(),
+                      style: TxtStyle()
+                        ..fontSize(30)
+                        ..textColor(Colors.pink),
+                    );
+                  }
+                }
+              }),
               const SizedBox(
                 height: 30,
               ),
               // 버턴
               TextButton(
-                  onPressed: () {
+                  onPressed: () async {
+/*
                     setState(() {
                       postFuture = postService.getOnePost();
                     });
+*/
+                    Provider.of<PostChangeNotifier>(context, listen: false)
+                        .getOnePost();
                   },
                   child: const Text('가져오기')),
             ],

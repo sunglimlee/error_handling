@@ -1,8 +1,10 @@
 import 'package:error_handling/model/post.dart';
 import 'package:error_handling/my_home_page.dart';
+import 'package:error_handling/repository/post_change_notifier.dart';
 import 'package:error_handling/repository/post_service.dart';
 import 'package:flutter/material.dart';
 import 'package:division/division.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -27,7 +29,13 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Error Handling',),
+      home: ChangeNotifierProvider(
+          create: (BuildContext context) {
+            return PostChangeNotifier();
+          },
+          child: const MyHomePage(
+            title: 'Error Handling',
+          )),
     );
   }
 }
